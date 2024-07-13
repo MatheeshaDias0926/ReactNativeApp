@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
@@ -6,73 +6,70 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading,setLoading] = useState(false);
-  const auth = FIREBASE_AUTH
+  const [loading, setLoading] = useState(false);
+  const auth = FIREBASE_AUTH;
 
-  const signIn = async()=>{
+  const signIn = async () => {
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth ,email, password);
+      const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
-   } catch (error:any) {
-    console.log(error);
-    alert("sign in failed"+error.message);
+    } catch (error: any) {
+      console.log(error);
+      alert('Sign in failed: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  }finally{
-    setLoading(false);
-  }
-}
-////////////////////////////////////////////////////////////////////////
-const signUp = async()=>{
+  const signUp = async () => {
     setLoading(true);
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password);
       console.log(response);
-      alert("check ur email");
-
-   } catch (error:any) {
-    console.log(error);
-    alert("sign in failed"+error.message);
-
-  }finally{
-    setLoading(false);
-  }
-}
- 
-  const handleLogin = () => {
-    // Perform login logic here
-    Alert.alert('Login Details', `Email: ${email}, Password: ${password}`);
+      alert('Check your email');
+    } catch (error: any) {
+      console.log(error);
+      alert('Sign up failed: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-        <KeyboardAvoidingView behavior='padding'>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry ={true}
-        autoCapitalize="none"
-      />
-      {loading?(
-        <ActivityIndicator size="large" color="red" />
-      ):(
-        <>
-              <Button title="Login" onPress={signIn} />
-              <Button title="create account" onPress={signUp} />
-
-        </>
-      )}
+      <KeyboardAvoidingView behavior="padding">
+        <Text style={styles.title}>My App</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholderTextColor="#ccc"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          placeholderTextColor="#ccc"
+        />
+        {loading ? (
+          <ActivityIndicator size="large" color="red" />
+        ) : (
+          <>
+            <TouchableOpacity style={styles.button} onPress={signIn}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={signUp}>
+              <Text style={styles.buttonText}>Create Account</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </KeyboardAvoidingView>
     </View>
   );
@@ -85,11 +82,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#333', // Dark grey background color
   },
   title: {
     fontSize: 24,
-    marginBottom: 16,
+    marginBottom: 80,
     textAlign: 'center',
+    fontWeight: 'bold', // Make text bold
+    color: '#fff', // White text color for better contrast
   },
   input: {
     height: 40,
@@ -97,5 +97,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+    color: '#fff', // White text color for input
+    fontWeight: 'bold', // Make text bold
+  },
+  button: {
+    backgroundColor: '#DAA520', // Dark yellow background color
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: '#fff', // White text color for better contrast
+    fontWeight: 'bold', // Make text bold
   },
 });
